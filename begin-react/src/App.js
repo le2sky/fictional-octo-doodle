@@ -1,16 +1,9 @@
 import React from 'react';
-import Hello from './Hello';
-import Wrapper from './Wrapper';
-
 import './App.css'
+import InputSample from './InputSample';
 function App(){
   return (
-    <>
-      <Wrapper>
-        <Hello name="leesky1" color="aqua"/>
-        <Hello name="leesky1" color="skyblue"/>
-      </Wrapper>
-    </>
+    <InputSample/>
   );
 
 }

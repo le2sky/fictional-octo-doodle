@@ -10,7 +10,12 @@ function Hello(props){
     const user = {
         name: props.name,
     }
-    return <div style={style}>안녕하세요 {user.name}님!</div>
+    return (
+        <div style={style}>
+            { props.isSpecial && <b>*</b>}
+            안녕하세요 {user.name}님!
+        </div>
+    );
 }
 
 Hello.defaultProps = {
