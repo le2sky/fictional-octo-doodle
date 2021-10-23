@@ -67,15 +67,6 @@ function App() {
 
   const { users } = state;
 
-  const onChange = useCallback(e => {
-    const { name, value } = e.target;
-    dispatch({
-      type: 'CHANGE_INPUT',
-      name,
-      value
-    });
-  }, []);
-
   const onCreate = useCallback(() => {
     dispatch({
       type: 'CREATE_USER',
