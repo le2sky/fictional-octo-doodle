@@ -1,6 +1,14 @@
-import React from 'react';
+import React, {useContext, useRef} from 'react';
+import { UserDispatch } from './App';
+import useInputs from './hooks/useInputs';
 
-function CreateUser({ username, email, onChange, onCreate }){
+function CreateUser(){
+    const nextId = useRef(4);
+    const dispatch = useContext(UserDispatch);
+    const [{username, email}, onChange, reset] = useInputs({
+        username: '',
+        email: ''
+    });
     return(
         <div>
             <input
@@ -16,7 +24,22 @@ function CreateUser({ username, email, onChange, onCreate }){
                 onChange={onChange}
                 value={email}
             />
-            <button onClick={onCreate}>등록</button>
+            <button onClick={
+                () => {
+                    const user = {
+                        username,
+                        email,
+                        id: nextId.current
+                    };
+                    dispatch({
+                        type: "CREATE_USER",
+                        user,
+                    });
+                    nextId.current+=1;
+                    reset();
+                }
+
+            }>등록</button>
         </div>
     );
 }

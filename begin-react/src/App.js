@@ -1,7 +1,8 @@
-import React, { useRef, useState, useMemo, useCallback, useReducer } from 'react';
+import React, { useMemo, useReducer } from 'react';
 import UserList from './UserList';
 import CreateUser from './CreateUser';
-import useInputs from './hooks/useInputs';
+import CountUser from './CountUser';
+
 
 function countActiveUsers(users) {
   console.log('활성 사용자 수를 세는중...');
@@ -57,56 +58,33 @@ function reducer(state, action){
   }
 }
 
+export const UserDispatch = React.createContext(null);
+
 function App() {
-  const [{ username, email }, onChange, reset] = useInputs({
-    username: '',
-    email: ''
-  })
   const [state, dispatch] = useReducer(reducer, initialState);
-  const nextId = useRef(4);
 
   const { users } = state;
 
-  const onCreate = useCallback(() => {
-    dispatch({
-      type: 'CREATE_USER',
-      user: {
-        id: nextId.current,
-        username,
-        email
-      }
-    });
-    nextId.current += 1;
-  }, [username, email]);
-
-
-  const onToggle = useCallback(id => {
-    dispatch({
-      type: 'TOGGLE_USER',
-      id
-    });
-  }, []);
-
-  const onRemove = useCallback(id => {
-    dispatch({
-      type: 'REMOVE_USER',
-      id
-    });
-  }, []);
+ //  useCallback은 특정 함수를 새로 만들지 않고 재사용하고 싶을때,
+ //  useMemo은 특정 값을 재사용하고 싶을 떄,
+ 
+ //  useCallback
+ /*
+      1. useCallback(() => {}, [deps])
+      2. 함수 본문안에 state나 props 가 있으면, deps에 작성
+ */
 
   const count = useMemo(() => countActiveUsers(users), [users]);
-
+  // useMemo => deps의 변경을 감지하면 useMemo 에 등록되어 있는  함수(countActiveusers(users)) 호출해서 값을 다시 저장 
+  // 그게 아니라면 App 컴포넌트 렌더링 시 함수를 다시 호출하는게 아닌 기존 값을 재사용 => 캐싱 효과
+  
   return (
-    <>
+    <UserDispatch.Provider value = {dispatch}>
       <CreateUser
-        username={username}
-        email={email}
-        onChange={onChange}
-        onCreate={onCreate}
       />
-      <UserList users={users}  onToggle={onToggle} onRemove={onRemove}/>
-      <div>활성사용자 수 : {count}</div>
-    </>
+      <UserList users={users} />
+      <CountUser count = {count}/>
+    </UserDispatch.Provider>
   );
 }
 
